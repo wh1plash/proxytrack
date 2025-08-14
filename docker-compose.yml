@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ProxyTrack
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ProxyTrack"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  prometheus:
+    # image: prom/prometheus
+    
+    build:
+      context: .
+      dockerfile: ./metrics/Dockerfile
+    container_name: prometheus 
+    ports:
+      - "9090:9090"
+    # volumes:
+    #   - prometheus:/etc/prometheus/
+    restart: unless-stopped      
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+      
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+  app:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    image: whiplash2486/proxytracker:v3.2
+    container_name: proxytracker-app
+    environment:
+      - PG_HOST=${PG_HOST}
+      - PG_PORT=${PG_PORT}
+      - PG_USER=${PG_USER}
+      - PG_PASS=${PG_PASS}
+      - PG_DB_NAME=${PG_DB_NAME}
+      - TARGET_URL=${TARGET_URL}
+      - REQ_TIMEOUT=${REQ_TIMEOUT}
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "8084:8084"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # restart: on-failure
+
+volumes:
+  # prometheus:
+  grafana_data:
+  postgres_data:

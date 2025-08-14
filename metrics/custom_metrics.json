@@ -1,0 +1,68 @@
+{
+    "uid": "go-app-handler-metrics",
+    "title": "Go Fiber App - Handler Metrics",
+    "schemaVersion": 30,
+    "version": 1,
+    "refresh": "10s",
+    "panels": [
+      {
+        "type": "stat",
+        "title": "Total Requests (All Handlers)",
+        "targets": [
+          {
+            "expr": "sum(rate(total_requests[1m]))",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
+      },
+      {
+        "type": "stat",
+        "title": "Total Errors (All Handlers)",
+        "targets": [
+          {
+            "expr": "sum(rate(total_errors[1m]))",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }
+      },
+      {
+        "type": "graph",
+        "title": "Requests per Handler",
+        "targets": [
+          {
+            "expr": "rate(total_requests[1m])",
+            "legendFormat": "{{handler}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 }
+      },
+      {
+        "type": "graph",
+        "title": "Errors per Handler",
+        "targets": [
+          {
+            "expr": "rate(total_errors[1m])",
+            "legendFormat": "{{handler}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 10, "w": 12, "h": 6 }
+      },
+      {
+        "type": "graph",
+        "title": "Average Latency per Handler (seconds)",
+        "targets": [
+          {
+            "expr": "rate(request_latency_sum[1m]) / rate(request_latency_count[1m])",
+            "legendFormat": "{{handler}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 16, "w": 12, "h": 6 }
+      }
+    ]
+  }
+  
