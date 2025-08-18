@@ -3,7 +3,7 @@ global:
   scrape_timeout: 10s
   evaluation_interval: 15s
 scrape_configs:
-  - job_name: 'proxytracker-app'
+  - job_name: 'proxytrack-app'
     metrics_path: '/metrics'
     scheme: 'http'
     scrape_interval: 15s
@@ -11,4 +11,4 @@ scrape_configs:
     follow_redirects: true
     static_configs:
       #- targets: ['172.17.0.1:8084']
-      - targets: ['proxytracker-app:8084']
+      - targets: ['proxytrack-app:8084']

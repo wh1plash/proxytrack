@@ -47,7 +47,9 @@ func (h *ProxyHandler) Proxy(c *fiber.Ctx) error {
 		return err
 	}
 
-	url, err := url.Parse(h.targetURL + c.OriginalURL())
+	redirect := c.Get("Redirect-To", h.targetURL)
+
+	url, err := url.Parse(redirect + c.OriginalURL())
 	if err != nil {
 		return ErrInternalServerError()
 	}
@@ -81,6 +83,7 @@ func (h *ProxyHandler) Proxy(c *fiber.Ctx) error {
 			fmt.Println("failed to insert session:", insertErr)
 			//return ErrInternalServerError()
 		}
+		c.Status(fiber.StatusGatewayTimeout)
 		return ErrBadGateway(err)
 	}
 	defer resp.Body.Close()

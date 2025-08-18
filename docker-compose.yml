@@ -50,8 +50,8 @@ services:
     # build:
     #   context: .
     #   dockerfile: Dockerfile
-    image: whiplash2486/proxytracker:v3.2
-    container_name: proxytracker-app
+    image: proxytrack:latest
+    container_name: proxytrack-app
     environment:
       - PG_HOST=${PG_HOST}
       - PG_PORT=${PG_PORT}
@@ -63,10 +63,12 @@ services:
       - JWT_SECRET=${JWT_SECRET}
     ports:
       - "8084:8084"
+    volumes:
+      - ./.env:/app/.env
     depends_on:
       postgres:
         condition: service_healthy
-    # restart: on-failure
+    restart: unless-stopped
 
 volumes:
   # prometheus:
