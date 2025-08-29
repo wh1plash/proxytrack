@@ -8,6 +8,7 @@ import (
 
 type SessionRecord struct {
 	ID           uuid.UUID
+	Path         string
 	Msg          []byte
 	RequestTime  time.Time
 	Response     []byte
@@ -27,9 +28,10 @@ type RequestParams struct {
 	Message  string `json:"message" validate:"required"`
 }
 
-func NewSessionFromParams(params RequestParams, b []byte) (*SessionRecord, error) {
+func NewSessionFromParams(params RequestParams, path string, b []byte) (*SessionRecord, error) {
 	return &SessionRecord{
 		ID:          uuid.New(),
+		Path:        path,
 		Msg:         b,
 		RequestTime: time.Now(),
 		Created_at:  time.Now(),

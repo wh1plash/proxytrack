@@ -68,8 +68,8 @@ func (p *PostgresStore) UpdateSession(ctx context.Context, id string, querySet m
 }
 
 func (p *PostgresStore) InsertSession(ctx context.Context, session *types.SessionRecord) error {
-	query := `INSERT INTO sessions (id, msg, request_time, response, response_time, status, error, duration_ms, created_at)
-               VALUES ($1, $2::jsonb, $3, $4::jsonb, $5, $6, $7, $8, $9)
+	query := `INSERT INTO sessions (id, path, msg, request_time, response, response_time, status, error, duration_ms, created_at)
+               VALUES ($1, $2, $3::jsonb, $4, $5::jsonb, $6, $7, $8, $9, $10)
 		RETURNING id`
 
 	insSession := &types.SessionRecord{}
@@ -77,6 +77,7 @@ func (p *PostgresStore) InsertSession(ctx context.Context, session *types.Sessio
 		ctx,
 		query,
 		session.ID,
+		session.Path,
 		session.Msg,
 		session.RequestTime,
 		session.Response,

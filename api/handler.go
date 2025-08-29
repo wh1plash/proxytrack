@@ -42,16 +42,16 @@ func (h *ProxyHandler) Proxy(c *fiber.Ctx) error {
 	// 	return NewValidationError(errors)
 	// }
 
-	session, err := types.NewSessionFromParams(params, c.Body())
-	if err != nil {
-		return err
-	}
-
 	redirect := c.Get("Redirect-To", h.targetURL)
 
 	url, err := url.Parse(redirect + c.OriginalURL())
 	if err != nil {
 		return ErrInternalServerError()
+	}
+
+	session, err := types.NewSessionFromParams(params, url.String(), c.Body())
+	if err != nil {
+		return err
 	}
 
 	body := bytes.NewReader(c.Body())
