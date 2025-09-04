@@ -66,7 +66,7 @@ func ErrBadRequest() Error {
 func ErrInternalServerError() Error {
 	return Error{
 		Code:    fiber.StatusInternalServerError,
-		Message: "Internal server error",
+		Message: "Internal Proxy Server error",
 	}
 }
 

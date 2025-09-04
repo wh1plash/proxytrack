@@ -15,9 +15,9 @@ func (p *PromMetrics) WithMetrics(h fiber.Handler, handlerName string) fiber.Han
 		start := time.Now()
 		err := h(c)
 		if err != nil {
+			// fmt.Println("Find error", err)
 			if apiErr, ok := err.(api.Error); ok {
-				p.TotalErrors.WithLabelValues(handlerName, "Timeout").Inc()
-				_ = apiErr.Code
+				p.TotalErrors.WithLabelValues(handlerName, strconv.Itoa(apiErr.Code)).Inc()
 			} else {
 				if valErr, ok := err.(api.ValidationError); ok {
 					p.TotalErrors.WithLabelValues(handlerName, "Validation").Inc()
