@@ -48,6 +48,7 @@ func (h *ProxyHandler) Proxy(c *fiber.Ctx) error {
 	if err != nil {
 		return ErrInternalServerError()
 	}
+	c.Locals("target_url", url.String())
 
 	session, err := types.NewSessionFromParams(params, url.String(), c.Body())
 	if err != nil {
@@ -119,6 +120,11 @@ func (h *ProxyHandler) Proxy(c *fiber.Ctx) error {
 	session.ResponseTime = time.Now()
 	session.Status = resp.StatusCode
 	session.DurationMs = int64(time.Since(start))
+
+	var parsed types.ResponseData
+	if err := json.Unmarshal(buf.Bytes(), &parsed); err == nil {
+		c.Locals("resp_code", parsed.Data.Code)
+	}
 
 	err = h.SStore.InsertSession(c.Context(), session)
 	if err != nil {

@@ -28,6 +28,19 @@ type RequestParams struct {
 	Message  string `json:"message" validate:"required"`
 }
 
+type ResponseData struct {
+	ErrCode int    `json:"errCode"`
+	Msg     string `json:"msg"`
+	Data    struct {
+		Success     bool   `json:"success"`
+		Code        string `json:"code"`
+		Description string `json:"description"`
+		RRN         string `json:"rrn"`
+		PAN         string `json:"pan"`
+		AuthTime    string `json:"authTime"`
+	} `json:"data"`
+}
+
 func NewSessionFromParams(params RequestParams, path string, b []byte) (*SessionRecord, error) {
 	return &SessionRecord{
 		ID:          uuid.New(),
